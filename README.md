@@ -1,4 +1,4 @@
-#The solution
+# The solution
 
 This code gives perfect score but the code is not the perfect and it can be optimized and bugs fixed in the future. This is just a one of the best solutions which was written to inspire people and give them a start. There may be several better solutions for this problem.
 
