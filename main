@@ -1,0 +1,112 @@
+def get_tests(filename):
+    
+    a = open(filename, "r")
+
+    line1 = a.readline().strip().replace(" ", ",").split(',')  
+    line2 = [x.strip().replace(" ", ",").split(',') for x in a.readlines()]
+
+    max_target = [int(line1[0])]
+    pizza_slice_types = [int(line1[1])]
+    pizza_slices = list(map(int,line2[-1]))
+    
+    return max_target, pizza_slices
+    
+def get_solution_dictionary(check_number, max_target, input_list):
+
+    temp_index_list = [] # To store the current solution
+    temp_value_list = [] # To store the current solution
+    
+    target_diff = [] # Store difference to target
+ 
+    diff = {}
+    
+    solution_dictionary = {check_number: {'diff': target_diff, 'values': temp_value_list, 'index': temp_index_list}}
+    
+    for i in range(len(input_list)):
+
+        # find the first value from the right handside which is lower than the max_target
+        if input_list[-i-1] <= max_target:
+            temp_value_list.append(input_list[-i-1])
+            temp_index_list.append(len(input_list)-i-1)
+            target_diff.append(max_target-sum(temp_value_list))
+            
+            # start indexing integers lower than the first number by creating a new range
+            for j in range(len(input_list)-i):
+                try:
+                    # find next numbers which when added to the list total returns a value less/equal to target
+                    if input_list[-i-j-2] + sum(temp_value_list) <= max_target:
+                        temp_value_list.append(input_list[-i-j-2])
+                        temp_index_list.append(len(input_list)-i-j-2)
+                        target_diff[0] = max_target-sum(temp_value_list)
+
+                        if solution_dictionary[check_number]['diff'][0] < min(target_diff):
+                            solution_dictionary['diff'] = min(target_diff) 
+                            solution_dictionary['values'] = temp_value_list
+                            solution_dictionary['index'] = temp_index_list
+                            
+                    
+                except IndexError:
+                    pass
+                
+                      
+            break
+            
+    return solution_dictionary
+    
+def solve(max_target, input_list):
+
+    solution_index_list = [] # To store the best solution indexes
+    solution_value_list = [] # To store the best solution values
+    
+    temp_solution = []
+    
+    target_diff = [] # Store differences to target
+    
+    
+    # scenario 1 - current list total is lower than target
+    if sum(input_list) <= max_target:
+        solution_index_list.append(list(range(len(input_list))))
+        solution_value_list.append(input_list)
+    
+    # scenario 2 - current list total is higher than target
+    # In this case we start iterating from the biggest number (furthest to the right), 
+    # appending this number to the temp list before sum(temp_list) to check if total is still within target
+    # If sum(temp_list) is over the target we remove the last added number and keep iterating until the sum(temp_list)
+    # is within the desired target. The Optimal result is stored in the solution_list until a better combination is found
+
+    for i in range(len(input_list)):
+
+        # find the first value from the right handside which is lower than the max_target
+        if input_list[-i-1] <= max_target:
+            
+            try:
+                for j in get_solution_dictionary(i+1, max_target, input_list[:len(input_list)-i]):
+
+                    # store lowest difference
+                    target_diff.append(get_solution_dictionary(i+1, max_target, input_list[:len(input_list)-i])[j]['diff'])
+                
+                    # if we get a zero difference store the number combination
+                    if get_solution_dictionary(i+1, max_target, input_list[:len(input_list)-i])[j]['diff'][0] == 0:
+                        del temp_solution[:]
+                        temp_solution.append(get_solution_dictionary(i+1, max_target, input_list[:len(input_list)-i])[j])
+                        break
+                        
+                    # if target difference (which is always the lowest) matches to the difference in our combination, store the numbers
+                    if min(target_diff)[0] == get_solution_dictionary(i+1, max_target, input_list[:len(input_list)-i])[j]['diff'][0]:
+                        del temp_solution[:]
+                        temp_solution.append(get_solution_dictionary(i+1, max_target, input_list[:len(input_list)-i])[j])                       
+                        continue
+
+            except TypeError:
+                continue
+
+    solution_values = temp_solution[0]['values']
+    solution_index = temp_solution[0]['index']
+    score = sum(solution_values)
+    
+    return score, solution_values, solution_index 
+    
+if __name__ == "__main__":
+    max_target = get_tests("b_small.in")[0][0]
+    slice_list = get_tests("b_small.in")[1]
+    solve(max_target, slice_list)
