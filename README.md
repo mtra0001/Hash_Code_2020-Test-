@@ -3,6 +3,7 @@
 Simply the algorithm is about adding up the number of slices of the given Pizzas in reverse order. In latest updated version, after each completion repeats the same procedure with a skipping the elemnt before the lastly considered element of the input array. This way leads to approaches considering more different combinations for each problem and gives the perfect solution.
 
 // Main loop is used to decrese the size of the currently considering range of input array
+
 // Sub loop is used to find the solution using currently considering range of input array
 
 main loop - - - - - - \            
