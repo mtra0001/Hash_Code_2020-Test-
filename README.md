@@ -1,4 +1,6 @@
-# Pizza Challenge
+# More Pizza
+
+Challenge can be found here - https://www.pietrolc.com/google-hash-code-more-pizza/
 
 Simply the algorithm is about adding up the number of slices of the given Pizzas in reverse order. In latest updated version, after each completion repeats the same procedure with a skipping the elemnt before the lastly considered element of the input array. This way leads to approaches considering more different combinations for each problem and gives the perfect solution.
 
